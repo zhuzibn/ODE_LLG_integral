@@ -29,9 +29,14 @@ thetaSHE=0.2;
 %initial condition
 init_theta=5/180*pi;init_phi=0;
 Hext=[0,0,0];
-psj=[0,1,0];%spin flux polarization
+psjSHE=[0,1,0];%spin flux polarization
 Ic=3e-3;%[Ampere]
 %calc
+if SOT_FLT
+    facFLT_SHE=2;%ratio of FLT/DLT
+else
+    facFLT_SHE=0;
+end
 totstep=round(runtime/tstep);
 m_init=[sin(init_theta)*cos(init_phi),sin(init_theta)*sin(init_phi),cos(init_theta)];
 Dx=0.01968237864387906;Dy=0.01968237864387906;

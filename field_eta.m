@@ -10,11 +10,13 @@
 %5. js, spin current density, double, [A/m2]
 %6. tFL, free layer thickness, double, [m]
 %7. Ms, saturation magnetization, double, [emu/cm3]
+%8. facFLT_SHE,ratio of FLT/DLT
+%9. psjSHE,SHE spin flux polarization
 %output
 %1. hh,total effective field (include SOT FLT), [1x3] vector, [Tesla]
 %2. a_parallel, STT+SOT DLT cofficient, double, [Tesla]
 %3. a_perpendicular, STT FLT cofficient, double, [Tesla]
-function [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms)
+function [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE)
 conf_file();%load configuration
 constantfile();%load constant
 switch IMAPMA
@@ -31,7 +33,7 @@ switch IMAPMA
         if dipolee
             %add code to calc hdipole
         else
-            hdipole=0;
+            hdipole=[0,0,0];
         end
 end
 Jp=2*tFL*(Ms*1e3)/hbar;
@@ -64,11 +66,7 @@ if STT_DLT
 end
 if SOT_DLT
     a_parallel_SHE=js/Jp;%to modify to auto get easy (y) axis
-    if SOT_FLT
-        a_perpendicular_SHE=fac_FLT_by_DLT_SHE*a_parallel_SHE*shepolarizer;
-    else
-        a_perpendicular_SHE=0;
-    end
+    a_perpendicular_SHE=facFLT_SHE*a_parallel_SHE*psjSHE;
 end
 %% damping like torque
 if STT_DLT && SOT_DLT

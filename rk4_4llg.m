@@ -62,23 +62,23 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     %Hk_tmp:[Gauss]
     
     mmm=mm1;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms);
-    dmdt=LLG_solver(alp,mmm,hh,psj,a_parallel,a_perpendicular);
+    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
+    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
     kk1=scal*dmdt;
     
     mmm=mm1+kk1*ts1/2;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms);
-    dmdt=LLG_solver(alp,mmm,hh,psj,a_parallel,a_perpendicular);
+    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
+    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
     kk2=scal*dmdt;
     
     mmm=mm1+kk2*ts1/2;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms);
-    dmdt=LLG_solver(alp,mmm,hh,psj,a_parallel,a_perpendicular);
+    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
+    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
     kk3=scal*dmdt;
     
     mmm=mm1+kk3*ts1;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms);
-    dmdt=LLG_solver(alp,mmm,hh,psj,a_parallel,a_perpendicular);
+    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
+    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
     kk4=scal*dmdt;
    
     mn1=mm1+ts1/6*(kk1+2*kk2+2*kk3+kk4);
