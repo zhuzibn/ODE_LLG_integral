@@ -34,7 +34,7 @@ if dimensionlessLLG
 else
     %Hk=[1,1,1];%normalization purpose
     tau_c=1;
-    scal=g/(1+alp^2);%scale parameter
+    scal=gam/(1+alp^2);%scale parameter
 end
 ts1=tstep*tau_c; %time step
 
