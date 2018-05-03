@@ -7,5 +7,6 @@ SOT_FLT=0;%enable SOT damping torque?
 STT_DLT=0;%enable STT DLT?
 STT_FLT=0;%enable STT FLT?
 dipolee=0;%enable dipole?
+thermalnois=0;%enable thermal noise
 %optional
 dimensionlessLLG=0;

@@ -8,7 +8,7 @@ tstep=0.1e-9;
 machineselect=1;%1\room 2\lab 3\cluster
 switch machineselect
     case 1
-     addpath('D:\dropbox\Dropbox\phd\code\general\constant');   
+     addpath('D:\Dropbox\phd\code\general\gitcontrol\constant');   
     case 2
      addpath('E:\dropbox\Dropbox\phd\code\general\constant'); 
     case 3 
@@ -25,12 +25,22 @@ Ms=1000;%[emu/cm3]=1e6 A/m
 alp=0.01;
 Hk=4*pi*800*1e-4;%[T]=800emu/cm3
 P=0.4;%polarization of FL layer
-thetaSHE=0.2;
+thetaSH=0.2;
 %initial condition
 init_theta=5/180*pi;init_phi=0;
 Hext=[0,0,0];
-psjSHE=[0,1,0];%spin flux polarization
+polSOT=[0,1,0];%spin flux polarization
+PolFL=[0,0,1];
+facFLT_STT=0.2;%ratio of FLT over DLT
+lambdaSF=5e-9;%spin diffusion length
 Ic=3e-3;%[Ampere]
+TT=300;%[K]
+mmmPL=[0,0,1];
+if dipolee
+    %to do
+else
+   K12Dipole=zeros(3,3); 
+end
 %calc
 if SOT_FLT
     facFLT_SHE=2;%ratio of FLT/DLT
@@ -43,7 +53,7 @@ Dx=0.01968237864387906;Dy=0.01968237864387906;
 Dz=0.960635227939411;%from online calculator
 Demag_=[Dx,0,0;0,Dy,0;0,0,Dz];
 jc=Ic/(LHM*tHM);%[A/m2]
-js=jc*thetaSHE;%amplitide of spin current density [A/m2]
+js_SOT=jc*thetaSH;%amplitide of spin current density [A/m2]
 %**********dynamics**********
 rk4_4llg();
 

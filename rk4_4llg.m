@@ -62,23 +62,31 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     %Hk_tmp:[Gauss]
     
     mmm=mm1;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
-    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
+    [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc,...
+    tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,LFL,WFL,facFLT_STT,...
+    thetaSH,tHM,lambdaSF,js_SOT,TT,alp,tstep,thermalnois);
+    dmdt=LLG_solver(alp,mmm,hh,polSOT,PolFL,sttdlt,sttflt,sotdlt,sotflt);
     kk1=scal*dmdt;
     
     mmm=mm1+kk1*ts1/2;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
-    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
+    [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc,...
+    tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,LFL,WFL,facFLT_STT,...
+    thetaSH,tHM,lambdaSF,js_SOT,TT,alp,tstep,thermalnois);
+    dmdt=LLG_solver(alp,mmm,hh,polSOT,PolFL,sttdlt,sttflt,sotdlt,sotflt);
     kk2=scal*dmdt;
     
     mmm=mm1+kk2*ts1/2;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
-    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
+    [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc,...
+    tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,LFL,WFL,facFLT_STT,...
+    thetaSH,tHM,lambdaSF,js_SOT,TT,alp,tstep,thermalnois);
+    dmdt=LLG_solver(alp,mmm,hh,polSOT,PolFL,sttdlt,sttflt,sotdlt,sotflt);
     kk3=scal*dmdt;
     
     mmm=mm1+kk3*ts1;
-    [hh,a_parallel,a_perpendicular]=field_eta(mmm,Hk,Demag_,Hext,js,tFL,Ms,facFLT_SHE,psjSHE);
-    dmdt=LLG_solver(alp,mmm,hh,psjSHE,a_parallel,a_perpendicular);
+    [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc,...
+    tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,LFL,WFL,facFLT_STT,...
+    thetaSH,tHM,lambdaSF,js_SOT,TT,alp,tstep,thermalnois);
+    dmdt=LLG_solver(alp,mmm,hh,polSOT,PolFL,sttdlt,sttflt,sotdlt,sotflt);
     kk4=scal*dmdt;
    
     mn1=mm1+ts1/6*(kk1+2*kk2+2*kk3+kk4);
