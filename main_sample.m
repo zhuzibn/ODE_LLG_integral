@@ -24,36 +24,45 @@ Ms=1000;%[emu/cm3]=1e6 A/m
 %unknown parameters
 alp=0.01;
 Hk=4*pi*800*1e-4;%[T]=800emu/cm3
-P=0.4;%polarization of FL layer
-thetaSH=0.2;
-%initial condition
-init_theta=5/180*pi;init_phi=0;
 Hext=[0,0,0];
-polSOT=[0,1,0];%spin flux polarization
-PolFL=[0,0,1];
-facFLT_STT=0.2;%ratio of FLT over DLT
-lambdaSF=5e-9;%spin diffusion length
+%% STT parameters
 Ic=3e-3;%[Ampere]
-TT=300;%[K]
-mmmPL=[0,0,1];
-if dipolee
-    %to do
+PolFL=0.4;%polarization of FL layer
+PolSTT=[0,0,1];
+if STT_FLT
+facFLT_STT=0.2;%ratio of FLT over DLT
 else
-   K12Dipole=zeros(3,3); 
+facFLT_STT=0;    
 end
-%calc
+%% SOT parameters
+thetaSH=0.2;
+lambdaSF=5e-9;%spin diffusion length
+polSOT=[0,1,0];%spin flux polarization
+jc=Ic/(LHM*tHM);%[A/m2]
+js_SOT=jc*thetaSH;%amplitide of spin current density [A/m2]
 if SOT_FLT
     facFLT_SHE=2;%ratio of FLT/DLT
 else
     facFLT_SHE=0;
 end
-totstep=round(runtime/tstep);
+%% initial condition
+init_theta=5/180*pi;init_phi=0;
 m_init=[sin(init_theta)*cos(init_phi),sin(init_theta)*sin(init_phi),cos(init_theta)];
+mmmPL=[0,0,1];
+%% others
+TT=300;%[K]
+
+if dipolee
+    %to do
+else
+   K12Dipole=zeros(3,3); 
+end
+
 Dx=0.01968237864387906;Dy=0.01968237864387906;
 Dz=0.960635227939411;%from online calculator
 Demag_=[Dx,0,0;0,Dy,0;0,0,Dz];
-jc=Ic/(LHM*tHM);%[A/m2]
-js_SOT=jc*thetaSH;%amplitide of spin current density [A/m2]
+%% calc
+totstep=round(runtime/tstep);
 %**********dynamics**********
 rk4_4llg();
 

@@ -75,9 +75,7 @@ if STT_DLT
             %         b=f12a;
     end
     sttdlt=jc/Jp*b;
-    if STT_FLT
-        sttflt=facFLT_STT*sttdlt;
-    end
+    sttflt=facFLT_STT*sttdlt;
 else
     sttdlt=0;
     sttflt=0;
