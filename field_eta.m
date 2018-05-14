@@ -62,7 +62,8 @@ if STT_DLT
         case 2%Slonswski torque efficiency for TMR
 %             switch IMAPMA
 %                 case 1%IMA
-                    b=PolFL/(1+(PolFL^2)*(mmm(2)*(wFL>lFL)+mmm(1)*(wFL<lFL)));
+                    %b=PolFL/(1+(PolFL^2)*(mmm(2)*(wFL>lFL)+mmm(1)*(wFL<lFL)));
+                    b=PolFL/(1+(PolFL^2)*(dot(mmm,mmmPL)));
 %                 case 2%PMA
 %                     b=P/(1+(P^2)*mmm(3));
 %             end
