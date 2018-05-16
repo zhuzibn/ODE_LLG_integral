@@ -6,7 +6,7 @@
 %2. Hk, crystalline anisotropy field, double, [Tesla]
 %3. Demag_, demagnetizing tensor, [3x3] matrix
 %4. Hext, external field, [1x3] vector, [Tesla]
-%5. jc, spin current density, double, [A/m2]
+%5. jc_STT, spin current density, double, [A/m2]
 %6. tFL, free layer thickness, double, [m]
 %7. Ms, saturation magnetization, double, [emu/cm3]
 %8. facFLT_SHE,ratio of FLT/DLT
@@ -19,7 +19,7 @@
 %15. thetaSH:spin hall angle
 %16. tHM:[m] thickness of HM
 %17. lambdaSF: [m]spin diffusion length
-%18. js_SOT:[A/m2] SOT current density
+%18. jc_SOT:[A/m2] SOT current density
 %19. TT:[K] Temperature
 %20. alp:damping constant, dimensionless
 %21. tstep: [s] time step
@@ -30,9 +30,9 @@
 %3. sttflt, STT DLT cofficient, double, [Tesla]
 %4. sotdlt, STT DLT cofficient, double, [Tesla]
 %5. sotflt, STT DLT cofficient, double, [Tesla]
-function [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc,...
+function [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...
     tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,lFL,wFL,facFLT_STT,...
-    thetaSH,tHM,lambdaSF,js_SOT,TT,alp,tstep,thermalnois)
+    thetaSH,tHM,lambdaSF,jc_SOT,TT,alp,tstep,thermalnois)
 conf_file();%load configuration
 constantfile();%load constant
 switch IMAPMA
@@ -75,14 +75,14 @@ if STT_DLT
             %         [f12a,f21a]=torque_eff(P1,P2,theta);
             %         b=f12a;
     end
-    sttdlt=jc/Jp*b;
+    sttdlt=jc_STT/Jp*b;
     sttflt=facFLT_STT*sttdlt;
 else
     sttdlt=0;
     sttflt=0;
 end
 if SOT_DLT
-    sotdlt=thetaSH*js_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
+    sotdlt=thetaSH*jc_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
     sotflt=facFLT_SHE*sotdlt;
 else
     sotdlt=0;

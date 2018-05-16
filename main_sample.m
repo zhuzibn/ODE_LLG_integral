@@ -26,7 +26,7 @@ alp=0.01;
 Hk=4*pi*800*1e-4;%[T]=800emu/cm3
 Hext=[0,0,0];
 %% STT parameters
-Ic=3e-3;%[Ampere]
+jc_STT=2e10;%[A/m2]
 PolFL=0.4;%polarization of FL layer
 PolSTT=[0,0,1];
 if STT_FLT
@@ -38,8 +38,7 @@ end
 thetaSH=0.2;
 lambdaSF=5e-9;%spin diffusion length
 polSOT=[0,1,0];%spin flux polarization
-jc=Ic/(LHM*tHM);%[A/m2]
-js_SOT=jc*thetaSH;%amplitide of spin current density [A/m2]
+jc_SOT=1e10;%[A/m2]
 if SOT_FLT
     facFLT_SHE=2;%ratio of FLT/DLT
 else
