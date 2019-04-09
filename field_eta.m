@@ -37,10 +37,15 @@ conf_file();%load configuration
 constantfile();%load constant
 switch IMAPMA
     case 1%IMA
-        hk=Hk_*[0,0,1].*mmm/Hk(2*(wPL>lPL)+1*(wPL<lPL)); %anisotropy field
-        hd=(-Hd*mmm'/Hk(2*(wPL>lPL)+1*(wPL<lPL)))'; %demagnetizing field
-        hext=Hext/Hk(2*(wPL>lPL)+1*(wPL<lPL));
-        hdipole=((HdipoleFL*m_PLinit')/Hk(2*(wPL>lPL)+1*(wPL<lPL)))';
+        hk=[0,Hk,0].*mmm; %anisotropy field
+        Hd=4*pi*Ms*Demag_*1e-4;%Tesla
+        hd=(-Hd*mmm')'; %demagnetizing field
+        hext=Hext;
+        if dipolee
+            hdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
+        else
+            hdipole=[0,0,0];
+        end
     case 2%PMA
         hk=[0,0,Hk]*mmm(3);
         Hd=4*pi*Ms*Demag_*1e-4;%Tesla

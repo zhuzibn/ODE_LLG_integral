@@ -4,7 +4,7 @@ clear all;clc;close all;
 %*******configuration**********
 conf_file();
 runtime=10e-9;
-tstep=0.1e-9;
+tstep=5e-12;
 machineselect=1;%1\room 2\lab 3\cluster
 switch machineselect
     case 1
