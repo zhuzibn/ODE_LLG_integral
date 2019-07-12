@@ -23,10 +23,10 @@ LHM=LFL*1.1;WHM=WFL*1.1;tHM=2e-9;
 Ms=1000;%[emu/cm3]=1e6 A/m
 %unknown parameters
 alp=0.01;
-Hk=4*pi*800*1e-4;%[T]=800emu/cm3
+Hk=8*pi*800*1e-4;%[T]=800emu/cm3
 Hext=[0,0,0];
 %% STT parameters
-jc_STT=2e10;%[A/m2]
+jc_STT=0e10;%[A/m2]
 PolFL=0.4;%polarization of FL layer
 PolSTT=[0,0,1];
 if STT_FLT
@@ -38,14 +38,14 @@ end
 thetaSH=0.2;
 lambdaSF=5e-9;%spin diffusion length
 polSOT=[0,1,0];%spin flux polarization
-jc_SOT=1e10;%[A/m2]
+jc_SOT=0e10;%[A/m2]
 if SOT_FLT
     facFLT_SHE=2;%ratio of FLT/DLT
 else
     facFLT_SHE=0;
 end
 %% initial condition
-init_theta=5/180*pi;init_phi=0;
+init_theta=45/180*pi;init_phi=0;
 m_init=[sin(init_theta)*cos(init_phi),sin(init_theta)*sin(init_phi),cos(init_theta)];
 mmmPL=[0,0,1];
 %% others
@@ -64,7 +64,10 @@ Demag_=[Dx,0,0;0,Dy,0;0,0,Dz];
 totstep=round(runtime/tstep);
 %**********dynamics**********
 rk4_4llg();
-
+figure;
+plot(tt*1e9,mmx,tt*1e9,mmy,tt*1e9,mmz,'linewidth',2)
+xlabel('time(ns)');ylabel('m')
+legend('mx','my','mz')
 
 
 
