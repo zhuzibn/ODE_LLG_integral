@@ -87,7 +87,8 @@ else
     sttflt=0;
 end
 if SOT_DLT
-    sotdlt=thetaSH*jc_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
+    %sotdlt=thetaSH*jc_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
+    sotdlt=thetaSH*jc_SOT/Jp;
     sotflt=facFLT_SHE*sotdlt;
 else
     sotdlt=0;

@@ -1,6 +1,7 @@
 % template for main.m, 
 % usage:copy to new dir, rename to main.m, change parameters
 clear all;clc;close all;
+rng shuffle
 %*******configuration**********
 conf_file();
 runtime=10e-9;
