@@ -5,3 +5,4 @@ there are five matlab files in this folder, first two are changable according to
 3. rk4_4llg.m: conjoining function
 4. field_eta.m: function which calculates effective field
 5. LLG_solver.m: function of integration evolver
+6. If you used this code for your experiments or found it helpful, consider citing the following paper: [J. Appl. Phys. 124, 193901 (2018)]
