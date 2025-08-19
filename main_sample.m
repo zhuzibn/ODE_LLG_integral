@@ -6,14 +6,6 @@ rng shuffle
 conf_file();
 runtime=10e-9;
 tstep=5e-12;
-machineselect=1;%1\room 2\lab 3\cluster
-switch machineselect
-    case 1
-     addpath('D:\Dropbox\phd\code\general\gitcontrol\constant');   
-    case 2
-     addpath('E:\dropbox\Dropbox\phd\code\general\constant'); 
-    case 3 
-end
 %**********paramaters**********
 %constant
 constantfile();
@@ -24,7 +16,7 @@ LHM=LFL*1.1;WHM=WFL*1.1;tHM=2e-9;
 Ms=1000;%[emu/cm3]=1e6 A/m
 %unknown parameters
 alp=0.01;
-Hk=8*pi*800*1e-4;%[T]=800emu/cm3
+Hk=4*pi*1600*1e-4;%[T]=1600emu/cm3
 Hext=[0,0,0];
 %% STT parameters
 jc_STT=0e10;%[A/m2]

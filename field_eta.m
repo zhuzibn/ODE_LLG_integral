@@ -95,7 +95,7 @@ else
     sotflt=0;
 end
 %% thermal fluctuation
-if thermalnois==1;%1(0) (not) enable thermal noise
+if thermalnois==1%1(0) (not) enable thermal noise
     hthermtmp=sqrt(2*kb*TT*alp/(lFL*wFL*tFL*Ms*1e3*gam*(1+alp^2)*tstep));%[T]
     hthermx=normrnd(0,hthermtmp);hthermy=normrnd(0,hthermtmp);hthermz=normrnd(0,hthermtmp);
     htherm=[hthermx,hthermy,hthermz];
