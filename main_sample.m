@@ -10,18 +10,18 @@ tstep=5e-12;
 %constant
 constantfile();
 %dimensions
-LFL=50e-9;WFL=50e-9;tFL=0.6e-9;
+LFL=50e-9;WFL=50e-9;tFL=0.6e-9; %[m]
 LHM=LFL*1.1;WHM=WFL*1.1;tHM=2e-9;
 %known parameters
-Ms=1000;%[emu/cm3]=1e6 A/m
+Ms=1000;%[emu/cm3]=Ms*1e3 A/m
 %unknown parameters
-alp=0.01;
+alp=0.01; %[dimensionless]
 Hk=4*pi*1600*1e-4;%[T]=1600emu/cm3
-Hext=[0,0,0];
+Hext=[0,0,0]; %[T]
 %% STT parameters
 jc_STT=0e10;%[A/m2]
-PolFL=0.4;%polarization of FL layer
-PolSTT=[0,0,1];
+PolFL=0.4;%polarization of FL layer [dimensionless]
+PolSTT=[0,0,1];%[dimensionless]
 if STT_FLT
 facFLT_STT=0.2;%ratio of FLT over DLT
 else
