@@ -38,13 +38,15 @@ else
 end
 ts1=tstep*tau_c; %time step
 
+n_steps=round(runtime / tstep);
+totstep=n_steps + 1;
+tt=(0:n_steps)' * tstep;
 ct1=1; %count 1
-t=linspace(0,runtime,totstep);
 mmx=zeros(totstep,1);%(:,1)is top layer, (:,2)is bottom layer
 mmy=zeros(totstep,1);
 mmz=zeros(totstep,1);
 mmx(1,1)=m_init(1);mmy(1,1)=m_init(2);mmz(1,1)=m_init(3);
-while ct1<totstep       
+while ct1<=n_steps       
 mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top 
 
 %% current calc
@@ -94,9 +96,4 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     mmx(ct1+1,1)=mn1(1);mmy(ct1+1,1)=mn1(2);mmz(ct1+1,1)=mn1(3);
     
     ct1=ct1+1;
-end
-if dimensionlessLLG
-    tt=t/tau_c*1e9;%unit[ns]
-else
-    tt=t;
 end
