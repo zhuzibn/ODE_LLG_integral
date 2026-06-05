@@ -1,5 +1,11 @@
 ## Source Code Changes
 
+### 2026-06-05 — Pin text line-ending policy
+
+- Added `.gitattributes` rules to disable Git text conversion for MATLAB (`*.m`) and Markdown (`*.md`) files, preserving their existing line endings byte-for-byte.
+- Set local Git configuration to disable automatic platform-dependent line-ending conversion.
+- Prevention: keep line-ending behavior explicit in `.gitattributes` so future comment and documentation edits do not create Git-induced CRLF/LF churn.
+
 ### 2026-06-05 — Document units and clean stale comments
 
 - Added a `README.md` Units section covering seconds internally, optional ns plotting, Tesla fields, `Ms` entered as emu/cm3 and converted with `Ms*1e3`, A/m2 current density, and meter-scale layer dimensions.

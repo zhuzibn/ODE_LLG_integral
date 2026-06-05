@@ -64,3 +64,4 @@ Rules:
 
 - The required improvements are listed in the fix.md file.
 - After code improvements, mark the corresponding items in fix.md file as done.
+- Do not run broad formatters or line-ending normalization unless explicitly requested.
