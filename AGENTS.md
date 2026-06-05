@@ -63,4 +63,4 @@ Rules:
 ## Code Improvement Rule
 
 - The required improvements are listed in the fix.md file.
-- After code improvements, mark the corresponding items in fixed.md file as done.
+- After code improvements, mark the corresponding items in fix.md file as done.

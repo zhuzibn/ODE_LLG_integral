@@ -26,6 +26,51 @@
 %mmx,mmy,mmz: magnetization component, unit vector
 %tt: simulation time list, unit [ns]
 %Icri: critical current for switching unit:[Ampere]
+if ~(isscalar(runtime) && isnumeric(runtime) && isfinite(runtime) && runtime > 0)
+    error('rk4_4llg:InvalidRuntime', 'runtime must be a finite positive scalar.');
+end
+if ~(isscalar(tstep) && isnumeric(tstep) && isfinite(tstep) && tstep > 0)
+    error('rk4_4llg:InvalidTstep', 'tstep must be a finite positive scalar.');
+end
+if ~(isscalar(Ms) && isnumeric(Ms) && isfinite(Ms) && Ms > 0)
+    error('rk4_4llg:InvalidMs', 'Ms must be a finite positive scalar.');
+end
+if ~(isscalar(tFL) && isnumeric(tFL) && isfinite(tFL) && tFL > 0)
+    error('rk4_4llg:InvalidTFL', 'tFL must be a finite positive scalar.');
+end
+if ~(isscalar(alp) && isnumeric(alp) && isfinite(alp) && alp >= 0)
+    error('rk4_4llg:InvalidAlpha', 'alp must be a finite nonnegative scalar.');
+end
+if ~(isscalar(IMAPMA) && isnumeric(IMAPMA) && isfinite(IMAPMA) && any(IMAPMA == [1, 2]))
+    error('rk4_4llg:InvalidIMAPMA', 'IMAPMA must be 1 for IMA or 2 for PMA.');
+end
+if ~(isnumeric(m_init) && isvector(m_init) && numel(m_init) == 3 && all(isfinite(m_init(:))))
+    error('rk4_4llg:InvalidInitialMagnetization', 'm_init must be a finite 3-component vector.');
+end
+if norm(m_init) == 0
+    error('rk4_4llg:ZeroInitialMagnetization', 'm_init must have nonzero norm.');
+end
+if ~(isnumeric(Demag_) && isequal(size(Demag_), [3, 3]) && all(isfinite(Demag_(:))))
+    error('rk4_4llg:InvalidDemag', 'Demag_ must be a finite 3-by-3 demagnetization tensor.');
+end
+if ~(isscalar(jc_STT) && isnumeric(jc_STT) && isfinite(jc_STT))
+    error('rk4_4llg:InvalidJcSTT', 'jc_STT must be a finite scalar.');
+end
+if ~(isscalar(jc_SOT) && isnumeric(jc_SOT) && isfinite(jc_SOT))
+    error('rk4_4llg:InvalidJcSOT', 'jc_SOT must be a finite scalar.');
+end
+if ~(isnumeric(Hext) && isvector(Hext) && numel(Hext) == 3 && all(isfinite(Hext(:))))
+    error('rk4_4llg:InvalidHext', 'Hext must be a finite 3-component vector.');
+end
+if ~(isnumeric(PolSTT) && isvector(PolSTT) && numel(PolSTT) == 3 && all(isfinite(PolSTT(:))))
+    error('rk4_4llg:InvalidPolSTT', 'PolSTT must be a finite 3-component vector.');
+end
+if ~(isnumeric(polSOT) && isvector(polSOT) && numel(polSOT) == 3 && all(isfinite(polSOT(:))))
+    error('rk4_4llg:InvalidPolSOT', 'polSOT must be a finite 3-component vector.');
+end
+if ~(isnumeric(mmmPL) && isvector(mmmPL) && numel(mmmPL) == 3 && all(isfinite(mmmPL(:))))
+    error('rk4_4llg:InvalidPinnedLayerMagnetization', 'mmmPL must be a finite 3-component vector.');
+end
 if dimensionlessLLG
     Hk_=Hk;
     Hk=[1*(FL_width<FL_length)*Hk,1*(FL_width>FL_length)*Hk,0];

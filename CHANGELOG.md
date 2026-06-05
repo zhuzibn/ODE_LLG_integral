@@ -1,5 +1,11 @@
 ## Source Code Changes
 
+### 2026-06-05 — Fail early on invalid RK4 configuration
+
+- Added pre-integration validation in `rk4_4llg.m` for required scalar values, magnetization/current vector shapes, `IMAPMA`, demagnetization tensor shape, and nonzero initial magnetization norm.
+- Kept numerical integration, LLGS formulas, torque signs, thermal-noise handling, and RK4 stage logic unchanged.
+- Prevention: keep configuration validation before any integration setup or field evaluation so invalid inputs fail with explicit identifiers instead of producing late dimension or numerical errors.
+
 ### 2026-06-04 — Fix RK4 time grid off-by-one
 
 - Removed the redundant caller-side totstep assignment from main.m; rk4_4llg.m now owns n_steps and stored sample count calculation.
