@@ -20,12 +20,57 @@
 % psj: unit 1-by-3 vector, spin flux polarization, 
 % note in STT the reflection type is opposite to m_pin_layer
 
-% dimension FL_length,FL_width,FL_thickness, unit [nm]
+% dimensions LFL,WFL,tFL,LHM,WHM,tHM, unit [m]
 
 %% output
 %mmx,mmy,mmz: magnetization component, unit vector
-%tt: simulation time list, unit [ns]
+%tt: simulation time list, unit [s]; plotting may convert to ns
 %Icri: critical current for switching unit:[Ampere]
+if ~(isscalar(runtime) && isnumeric(runtime) && isfinite(runtime) && runtime > 0)
+    error('rk4_4llg:InvalidRuntime', 'runtime must be a finite positive scalar.');
+end
+if ~(isscalar(tstep) && isnumeric(tstep) && isfinite(tstep) && tstep > 0)
+    error('rk4_4llg:InvalidTstep', 'tstep must be a finite positive scalar.');
+end
+if ~(isscalar(Ms) && isnumeric(Ms) && isfinite(Ms) && Ms > 0)
+    error('rk4_4llg:InvalidMs', 'Ms must be a finite positive scalar.');
+end
+if ~(isscalar(tFL) && isnumeric(tFL) && isfinite(tFL) && tFL > 0)
+    error('rk4_4llg:InvalidTFL', 'tFL must be a finite positive scalar.');
+end
+if ~(isscalar(alp) && isnumeric(alp) && isfinite(alp) && alp >= 0)
+    error('rk4_4llg:InvalidAlpha', 'alp must be a finite nonnegative scalar.');
+end
+if ~(isscalar(IMAPMA) && isnumeric(IMAPMA) && isfinite(IMAPMA) && any(IMAPMA == [1, 2]))
+    error('rk4_4llg:InvalidIMAPMA', 'IMAPMA must be 1 for IMA or 2 for PMA.');
+end
+if ~(isnumeric(m_init) && isvector(m_init) && numel(m_init) == 3 && all(isfinite(m_init(:))))
+    error('rk4_4llg:InvalidInitialMagnetization', 'm_init must be a finite 3-component vector.');
+end
+if norm(m_init) == 0
+    error('rk4_4llg:ZeroInitialMagnetization', 'm_init must have nonzero norm.');
+end
+if ~(isnumeric(Demag_) && isequal(size(Demag_), [3, 3]) && all(isfinite(Demag_(:))))
+    error('rk4_4llg:InvalidDemag', 'Demag_ must be a finite 3-by-3 demagnetization tensor.');
+end
+if ~(isscalar(jc_STT) && isnumeric(jc_STT) && isfinite(jc_STT))
+    error('rk4_4llg:InvalidJcSTT', 'jc_STT must be a finite scalar.');
+end
+if ~(isscalar(jc_SOT) && isnumeric(jc_SOT) && isfinite(jc_SOT))
+    error('rk4_4llg:InvalidJcSOT', 'jc_SOT must be a finite scalar.');
+end
+if ~(isnumeric(Hext) && isvector(Hext) && numel(Hext) == 3 && all(isfinite(Hext(:))))
+    error('rk4_4llg:InvalidHext', 'Hext must be a finite 3-component vector.');
+end
+if ~(isnumeric(PolSTT) && isvector(PolSTT) && numel(PolSTT) == 3 && all(isfinite(PolSTT(:))))
+    error('rk4_4llg:InvalidPolSTT', 'PolSTT must be a finite 3-component vector.');
+end
+if ~(isnumeric(polSOT) && isvector(polSOT) && numel(polSOT) == 3 && all(isfinite(polSOT(:))))
+    error('rk4_4llg:InvalidPolSOT', 'polSOT must be a finite 3-component vector.');
+end
+if ~(isnumeric(mmmPL) && isvector(mmmPL) && numel(mmmPL) == 3 && all(isfinite(mmmPL(:))))
+    error('rk4_4llg:InvalidPinnedLayerMagnetization', 'mmmPL must be a finite 3-component vector.');
+end
 if dimensionlessLLG
     Hk_=Hk;
     Hk=[1*(FL_width<FL_length)*Hk,1*(FL_width>FL_length)*Hk,0];
@@ -38,13 +83,15 @@ else
 end
 ts1=tstep*tau_c; %time step
 
+n_steps=round(runtime / tstep);
+totstep=n_steps + 1;
+tt=(0:n_steps)' * tstep;
 ct1=1; %count 1
-t=linspace(0,runtime,totstep);
 mmx=zeros(totstep,1);%(:,1)is top layer, (:,2)is bottom layer
 mmy=zeros(totstep,1);
 mmz=zeros(totstep,1);
 mmx(1,1)=m_init(1);mmy(1,1)=m_init(2);mmz(1,1)=m_init(3);
-while ct1<totstep       
+while ct1<=n_steps       
 mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top 
 
 %% current calc
@@ -55,11 +102,11 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     hext=(hext*Hk(2)*1e7)/4/pi;
     hdipole=(hdipole*Hk(2)*1e7)/4/pi;
     end
-    %% unit convension:
+    %% legacy unit notes:
     %e_tmp:[e],unit electron charge
     %hbar_tmp:[ev.s]
     %d_tmp:[m],FL thickness
-    %Hk_tmp:[Gauss]
+    %Hk_tmp:[Tesla]
     
     mmm=mm1;
     [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...
@@ -94,9 +141,4 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     mmx(ct1+1,1)=mn1(1);mmy(ct1+1,1)=mn1(2);mmz(ct1+1,1)=mn1(3);
     
     ct1=ct1+1;
-end
-if dimensionlessLLG
-    tt=t/tau_c*1e9;%unit[ns]
-else
-    tt=t;
 end

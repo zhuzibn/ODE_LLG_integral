@@ -2,7 +2,7 @@
 % usage: add path which contain this file, call the function
 % don't create the same function in new project 
 %input
-%1. mmm, magnetization, [1x3] vector, [emu/cm3]
+%1. mmm, normalized magnetization, [1x3] unit vector
 %2. Hk, crystalline anisotropy field, double, [Tesla]
 %3. Demag_, demagnetizing tensor, [3x3] matrix
 %4. Hext, external field, [1x3] vector, [Tesla]
@@ -11,12 +11,12 @@
 %7. Ms, saturation magnetization, double, [emu/cm3]
 %8. facFLT_SHE,ratio of FLT/DLT
 %9. K12Dipole, dipole tensor, [3x3] matrix
-%10. mmmPL: magnetization of PL
-%11. PolFL:polarization of FL
+%10. mmmPL: normalized magnetization of PL
+%11. PolFL:polarization of FL, dimensionless
 %12. lFL: length of FL [m]
 %13. wFL: width of FL [m]
-%14. facFLT_STT:ratio of FLT/DLT in STT 
-%15. thetaSH:spin hall angle
+%14. facFLT_STT:ratio of STT FLT/DLT
+%15. thetaSH:spin Hall angle
 %16. tHM:[m] thickness of HM
 %17. lambdaSF: [m]spin diffusion length
 %18. jc_SOT:[A/m2] SOT current density
@@ -25,11 +25,11 @@
 %21. tstep: [s] time step
 %22. thermalnois: flag for thermal noise
 %output
-%1. hh,total effective field (include SOT FLT), [1x3] vector, [Tesla]
-%2. sttdlt, STT DLT cofficient, double, [Tesla]
-%3. sttflt, STT DLT cofficient, double, [Tesla]
-%4. sotdlt, STT DLT cofficient, double, [Tesla]
-%5. sotflt, STT DLT cofficient, double, [Tesla]
+%1. hh,total effective field excluding FLT terms, [1x3] vector, [Tesla]
+%2. sttdlt, STT DLT field-equivalent coefficient, double, [Tesla]
+%3. sttflt, STT FLT field-equivalent coefficient, double, [Tesla]
+%4. sotdlt, SOT DLT field-equivalent coefficient, double, [Tesla]
+%5. sotflt, SOT FLT field-equivalent coefficient, double, [Tesla]
 function [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...
     tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,lFL,wFL,facFLT_STT,...
     thetaSH,tHM,lambdaSF,jc_SOT,TT,alp,tstep,thermalnois)

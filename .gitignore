@@ -1,0 +1,6 @@
+.sisyphus/
+.ruff_cache/
+**/__pycache__/
+
+benchmarks/current/
+benchmarks/reports/
