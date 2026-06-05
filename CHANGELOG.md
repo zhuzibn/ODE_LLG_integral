@@ -1,5 +1,12 @@
 ## Source Code Changes
 
+### 2026-06-05 — Document units and clean stale comments
+
+- Added a `README.md` Units section covering seconds internally, optional ns plotting, Tesla fields, `Ms` entered as emu/cm3 and converted with `Ms*1e3`, A/m2 current density, and meter-scale layer dimensions.
+- Corrected stale root MATLAB comments for normalized magnetization, meter dimensions, `tt` units, SOT/STT DLT versus FLT labels, and field-equivalent torque coefficient labels.
+- Kept executable MATLAB formulas, benchmark baselines, LLGS signs, and RK4 logic unchanged.
+- Prevention: keep the README Units section as the single convention reference and update comments when variables or plotting conversions change.
+
 ### 2026-06-05 — Fail early on invalid RK4 configuration
 
 - Added pre-integration validation in `rk4_4llg.m` for required scalar values, magnetization/current vector shapes, `IMAPMA`, demagnetization tensor shape, and nonzero initial magnetization norm.

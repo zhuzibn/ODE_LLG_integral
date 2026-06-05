@@ -20,11 +20,11 @@
 % psj: unit 1-by-3 vector, spin flux polarization, 
 % note in STT the reflection type is opposite to m_pin_layer
 
-% dimension FL_length,FL_width,FL_thickness, unit [nm]
+% dimensions LFL,WFL,tFL,LHM,WHM,tHM, unit [m]
 
 %% output
 %mmx,mmy,mmz: magnetization component, unit vector
-%tt: simulation time list, unit [ns]
+%tt: simulation time list, unit [s]; plotting may convert to ns
 %Icri: critical current for switching unit:[Ampere]
 if ~(isscalar(runtime) && isnumeric(runtime) && isfinite(runtime) && runtime > 0)
     error('rk4_4llg:InvalidRuntime', 'runtime must be a finite positive scalar.');
@@ -102,11 +102,11 @@ mm1=[mmx(ct1,1),mmy(ct1,1),mmz(ct1,1)]; %top
     hext=(hext*Hk(2)*1e7)/4/pi;
     hdipole=(hdipole*Hk(2)*1e7)/4/pi;
     end
-    %% unit convension:
+    %% legacy unit notes:
     %e_tmp:[e],unit electron charge
     %hbar_tmp:[ev.s]
     %d_tmp:[m],FL thickness
-    %Hk_tmp:[Gauss]
+    %Hk_tmp:[Tesla]
     
     mmm=mm1;
     [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...

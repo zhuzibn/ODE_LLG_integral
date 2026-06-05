@@ -37,7 +37,7 @@ A. Must-Fix Correctness Issues
        Smallest safe implementation: first pass config flags explicitly into field_eta; keep old wrapper behavior
        temporarily if needed. Do not change formulas in the same patch.
 
-    4. Document unit convention in one place
+    4. [done 2026-06-05] Document unit convention in one place
        Risk: low.
        Smallest safe implementation: add a short “Units” section to README or local project docs: fields in Tesla, Ms in
        emu/cm3 converted by Ms*1e3, currents in A/m2, time in seconds, plotted time in ns.
@@ -86,7 +86,7 @@ A. Must-Fix Correctness Issues
        Smallest safe implementation: rename or alias hbar to hbar_over_e_eVs_or_Js_per_C only in comments first, then
        later replace with explicit SI expression hbar_Js / ele.
 
-    4. Clean stale comments and wrong docs
+    4. [done 2026-06-05] Clean stale comments and wrong docs
        Risk: low.
        Smallest safe implementation: fix comments claiming tt is ns in all modes, dimensions are nm, and FLT comments that
        say DLT.
