@@ -1,5 +1,23 @@
 ## Source Code Changes
 
+### 2026-06-07 — Remove duplicate example driver
+
+- Removed `main_sample.m` after verifying it was byte-for-byte identical to `main.m`.
+- Kept `main.m` as the single editable example driver and updated the README accordingly.
+- Prevention: maintain one canonical example driver so configuration and API migrations cannot leave duplicate copies out of sync.
+
+### 2026-06-07 — Refactor configuration and RK4 interfaces without physics changes
+
+- Added `make_config.m` and `physical_constants.m` to expose configuration flags and physical constants as explicit structs.
+- Added callable `rk4_4llg_solver(params)` returning `tt`, `mmx`, `mmy`, and `mmz`.
+- Removed hidden `conf_file` and `constantfile` execution from `field_eta.m`; configuration and constants are now explicit arguments supplied by the solver or direct tests.
+- Clarified that the existing `6.58211951440e-16` torque coefficient is numerically hbar in eV.s, equivalently hbar/e in J.s/C, without changing its value or use.
+- Migrated `main.m`, the deterministic benchmark harness, and tests to the callable struct-based API.
+- Removed the root workspace compatibility scripts and benchmark case configuration scripts after all active callers were migrated.
+- Factored the repeated field-plus-LLG RK stage evaluation into a local helper only after the benchmark comparison and all tests passed.
+- Kept LLGS formulas, torque signs, unit conventions, RK4 stage states, arithmetic order, thermal-noise behavior, and frozen benchmark baselines unchanged.
+- Prevention: keep physics inputs explicit at computational boundaries and require exact deterministic benchmark comparison plus the full test suite after future RK/config refactors.
+
 ### 2026-06-07 — Add minimal C1, C4, and C5 tests
 
 - Added a deterministic zero-current, no-torque, no-noise test that checks magnetization norm conservation over a short run.

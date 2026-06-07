@@ -33,7 +33,8 @@ expected_tesla = mu_0 * (Ms * 1e3);
 [hh, ~, ~, ~, ~] = field_eta( ...
     [1, 0, 0], 0, diag([1, 0, 0]), [0, 0, 0], 0, ...
     1e-9, Ms, 0, zeros(3), [0, 0, 1], 0.4, 1e-9, 1e-9, 0, ...
-    0, 1e-9, 1e-9, 0, 0, 0, 1e-12, 0);
+    0, 1e-9, 1e-9, 0, 0, 0, 1e-12, ...
+    make_config(struct('STT_DLT', 0)), physical_constants());
 
 verifyEqual(testCase, 4 * pi * Ms * 1e-4, expected_tesla, ...
     'RelTol', 1e-12);
@@ -54,7 +55,8 @@ hbar = 6.58211951440e-16;
 [~, sttdlt, sttflt, sotdlt, sotflt] = field_eta( ...
     mmm, 0, zeros(3), [0, 0, 0], jc_STT, ...
     tFL, Ms, 0, zeros(3), mmmPL, PolFL, 1e-9, 1e-9, 0, ...
-    0, 1e-9, 1e-9, 0, 0, 0, 1e-12, 0);
+    0, 1e-9, 1e-9, 0, 0, 0, 1e-12, ...
+    make_config(), physical_constants());
 
 % Reproduce the existing field_eta TMR efficiency and Jp expressions.
 expected_efficiency = PolFL / (1 + PolFL^2 * dot(mmm, mmmPL));
@@ -97,44 +99,20 @@ verifyError(testCase, @() runSolver(cfg), ...
 end
 
 function trajectory = runSolver(cfg)
-% rk4_4llg is a script, so expose each configuration field in its caller
-% workspace using the variable names expected by the production code.
-runtime = cfg.runtime;
-tstep = cfg.tstep;
-Ms = cfg.Ms;
-tFL = cfg.tFL;
-alp = cfg.alp;
-IMAPMA = cfg.IMAPMA;
-m_init = cfg.m_init;
-Demag_ = cfg.Demag_;
-jc_STT = cfg.jc_STT;
-jc_SOT = cfg.jc_SOT;
-Hext = cfg.Hext;
-PolSTT = cfg.PolSTT;
-polSOT = cfg.polSOT;
-mmmPL = cfg.mmmPL;
-dimensionlessLLG = cfg.dimensionlessLLG;
-Hk = cfg.Hk;
-LFL = cfg.LFL;
-WFL = cfg.WFL;
-facFLT_SHE = cfg.facFLT_SHE;
-K12Dipole = cfg.K12Dipole;
-PolFL = cfg.PolFL;
-facFLT_STT = cfg.facFLT_STT;
-thetaSH = cfg.thetaSH;
-tHM = cfg.tHM;
-lambdaSF = cfg.lambdaSF;
-TT = cfg.TT;
-thermalnois = cfg.thermalnois;
-STT_DLT = cfg.STT_DLT; %#ok<NASGU>
-STT_FLT = cfg.STT_FLT; %#ok<NASGU>
-SOT_DLT = cfg.SOT_DLT; %#ok<NASGU>
-SOT_FLT = cfg.SOT_FLT; %#ok<NASGU>
-dipolee = cfg.dipolee; %#ok<NASGU>
-
-% The script also expects physical constants to exist in the same workspace.
-constantfile;
-rk4_4llg;
+params = rmfield(cfg, { ...
+    'IMAPMA', 'STT_DLT', 'STT_FLT', 'SOT_DLT', 'SOT_FLT', ...
+    'dipolee', 'thermalnois', 'dimensionlessLLG'});
+params.config = make_config(struct( ...
+    'IMAPMA', cfg.IMAPMA, ...
+    'STT_DLT', cfg.STT_DLT, ...
+    'STT_FLT', cfg.STT_FLT, ...
+    'SOT_DLT', cfg.SOT_DLT, ...
+    'SOT_FLT', cfg.SOT_FLT, ...
+    'dipolee', cfg.dipolee, ...
+    'thermalnois', cfg.thermalnois, ...
+    'dimensionlessLLG', cfg.dimensionlessLLG));
+params.constants = physical_constants();
+[~, mmx, mmy, mmz] = rk4_4llg_solver(params);
 trajectory = [mmx(:), mmy(:), mmz(:)];
 end
 
