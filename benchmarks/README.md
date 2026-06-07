@@ -1,6 +1,7 @@
 # LLGS Benchmarks
 
-These benchmarks freeze deterministic trajectories from the original LLGS scripts without modifying the solver files.
+These benchmarks compare deterministic trajectories from the explicit
+`rk4_4llg_solver(params)` API against frozen reference outputs.
 
 ## Generate Current Results
 

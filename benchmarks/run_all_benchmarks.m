@@ -47,13 +47,20 @@ rng(1, 'twister');
 addpath(repo_root);
 cd(case_dir);
 
-conf_file();
 params();
-constantfile();
+config = benchmark_config(case_name);
+params_struct = struct( ...
+    'runtime', runtime, 'tstep', tstep, 'Ms', Ms, 'tFL', tFL, ...
+    'alp', alp, 'm_init', m_init, 'Demag_', Demag_, ...
+    'jc_STT', jc_STT, 'jc_SOT', jc_SOT, 'Hext', Hext, ...
+    'PolSTT', PolSTT, 'polSOT', polSOT, 'mmmPL', mmmPL, ...
+    'Hk', Hk, 'LFL', LFL, 'WFL', WFL, ...
+    'facFLT_SHE', facFLT_SHE, 'K12Dipole', K12Dipole, ...
+    'PolFL', PolFL, 'facFLT_STT', facFLT_STT, ...
+    'thetaSH', thetaSH, 'tHM', tHM, 'lambdaSF', lambdaSF, ...
+    'TT', TT, 'config', config, 'constants', physical_constants());
 
-totstep = round(runtime / tstep);
-
-rk4_4llg();
+[tt, mmx, mmy, mmz] = rk4_4llg_solver(params_struct);
 
 trajectory = [mmx(:), mmy(:), mmz(:)];
 final_m = trajectory(end, :);
@@ -64,14 +71,14 @@ metadata.case_name = case_name;
 metadata.rng_seed = 1;
 metadata.rng_algorithm = 'twister';
 metadata.case_relative_path = fullfile('benchmarks', 'cases', case_name);
-metadata.source_files = {'LLG_solver.m', 'field_eta.m', 'rk4_4llg.m'};
+metadata.source_files = {'LLG_solver.m', 'field_eta.m', 'rk4_4llg_solver.m'};
 metadata.output_fields = {'tt', 'mmx', 'mmy', 'mmz', 'final_m', 'max_norm_error', 'metadata'};
 metadata.tolerance_default = 1e-10;
 
 metadata.parameters = struct();
 metadata.parameters.runtime = runtime;
 metadata.parameters.tstep = tstep;
-metadata.parameters.totstep = totstep;
+metadata.parameters.totstep = numel(tt);
 metadata.parameters.m_init = m_init;
 metadata.parameters.Ms = Ms;
 metadata.parameters.alp = alp;
@@ -80,8 +87,8 @@ metadata.parameters.Hext = Hext;
 metadata.parameters.jc_STT = jc_STT;
 metadata.parameters.jc_SOT = jc_SOT;
 metadata.parameters.thetaSH = thetaSH;
-metadata.parameters.thermalnois = thermalnois;
-metadata.parameters.dimensionlessLLG = dimensionlessLLG;
+metadata.parameters.thermalnois = config.thermalnois;
+metadata.parameters.dimensionlessLLG = config.dimensionlessLLG;
 
 result = struct();
 result.tt = tt;
@@ -91,4 +98,19 @@ result.mmz = mmz;
 result.final_m = final_m;
 result.max_norm_error = max(norm_error);
 result.metadata = metadata;
+end
+
+function config = benchmark_config(case_name)
+switch case_name
+    case 'pma_relax_no_current'
+        overrides = struct('STT_DLT', 0);
+    case 'pma_stt_current'
+        overrides = struct();
+    case 'pma_sot_current'
+        overrides = struct('STT_DLT', 0, 'SOT_DLT', 1);
+    otherwise
+        error('ODE_LLG_integral:UnknownBenchmarkCase', ...
+            'Unknown benchmark case "%s".', case_name);
+end
+config = make_config(overrides);
 end

@@ -1,10 +1,20 @@
 # ODE_LLG_integral
-there are five matlab files in this folder, "main_sample.m" and "conf_file_sample.m" are changable according to your need, the others should not be modified unless you understand it.
-1. main_sample.m: start file
-2. conf_file_sample.m: configuration file
-3. rk4_4llg.m: conjoining function
-4. field_eta.m: function which calculates effective field
-5. LLG_solver.m: function of integration evolver
+
+The root solver uses explicit configuration, constants, and parameter structs:
+
+1. `main.m`: editable example driver.
+2. `make_config.m`: creates configuration flags.
+3. `physical_constants.m`: returns the physical constants.
+4. `rk4_4llg_solver.m`: callable RK4 integration function.
+5. `field_eta.m`: calculates effective fields and torque coefficients.
+6. `LLG_solver.m`: evaluates the LLGS right-hand side.
+
+Create a configuration with `make_config()`, collect simulation inputs in a
+`params` struct, and call:
+
+```matlab
+[tt, mmx, mmy, mmz] = rk4_4llg_solver(params);
+```
 
 ## Units
 

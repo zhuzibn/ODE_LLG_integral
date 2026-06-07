@@ -23,7 +23,8 @@
 %19. TT:[K] Temperature
 %20. alp:damping constant, dimensionless
 %21. tstep: [s] time step
-%22. thermalnois: flag for thermal noise
+%22. config: configuration flags from make_config()
+%23. constants: physical constants from physical_constants()
 %output
 %1. hh,total effective field excluding FLT terms, [1x3] vector, [Tesla]
 %2. sttdlt, STT DLT field-equivalent coefficient, double, [Tesla]
@@ -32,16 +33,14 @@
 %5. sotflt, SOT FLT field-equivalent coefficient, double, [Tesla]
 function [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...
     tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,lFL,wFL,facFLT_STT,...
-    thetaSH,tHM,lambdaSF,jc_SOT,TT,alp,tstep,thermalnois)
-conf_file();%load configuration
-constantfile();%load constant
-switch IMAPMA
+    thetaSH,tHM,lambdaSF,jc_SOT,TT,alp,tstep,config,constants)
+switch config.IMAPMA
     case 1%IMA
         hk=[0,Hk,0].*mmm; %anisotropy field
         Hd=4*pi*Ms*Demag_*1e-4;%Tesla
         hd=(-Hd*mmm')'; %demagnetizing field
         hext=Hext;
-        if dipolee
+        if config.dipolee
             hdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
         else
             hdipole=[0,0,0];
@@ -51,14 +50,15 @@ switch IMAPMA
         Hd=4*pi*Ms*Demag_*1e-4;%Tesla
         hd=(-Hd*mmm')';%([3x3]*[3x1])'=[1x3]
         hext=Hext;
-        if dipolee
+        if config.dipolee
             hdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
         else
             hdipole=[0,0,0];
         end
 end
-Jp=2*tFL*(Ms*1e3)/hbar;
-if STT_DLT
+% Numerically hbar in eV.s, equivalently hbar/e in J.s/C for this coefficient.
+Jp=2*tFL*(Ms*1e3)/constants.hbar_over_e_eVs_or_Js_per_C;
+if config.STT_DLT
     efficiencyselect=2;
     switch efficiencyselect%only for IMA, to modify to fit for PMA
         case 1
@@ -86,7 +86,7 @@ else
     sttdlt=0;
     sttflt=0;
 end
-if SOT_DLT
+if config.SOT_DLT
     %sotdlt=thetaSH*jc_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
     sotdlt=thetaSH*jc_SOT/Jp;
     sotflt=facFLT_SHE*sotdlt;
@@ -95,8 +95,8 @@ else
     sotflt=0;
 end
 %% thermal fluctuation
-if thermalnois==1%1(0) (not) enable thermal noise
-    hthermtmp=sqrt(2*kb*TT*alp/(lFL*wFL*tFL*Ms*1e3*gam*(1+alp^2)*tstep));%[T]
+if config.thermalnois==1%1(0) (not) enable thermal noise
+    hthermtmp=sqrt(2*constants.kb*TT*alp/(lFL*wFL*tFL*Ms*1e3*constants.gam*(1+alp^2)*tstep));%[T]
     hthermx=normrnd(0,hthermtmp);hthermy=normrnd(0,hthermtmp);hthermz=normrnd(0,hthermtmp);
     htherm=[hthermx,hthermy,hthermz];
 else
