@@ -1,5 +1,14 @@
 ## Source Code Changes
 
+### 2026-06-07 — Add minimal C1, C4, and C5 tests
+
+- Added a deterministic zero-current, no-torque, no-noise test that checks magnetization norm conservation over a short run.
+- Added unit tests for the existing `Ms` emu/cm3-to-A/m/Tesla conversion and a fixed-parameter STT coefficient scale.
+- Added validation tests for invalid `IMAPMA`, negative `tstep`, negative `tFL`, and zero initial magnetization, checking the existing explicit error identifiers.
+- Added `tests/run_all_tests.m` as the aggregate MATLAB test entry point; no LLGS formulas, RK4 logic, thermal-noise behavior, or benchmark baselines were changed.
+- Added concise comments explaining each test's scientific intent, expected formula, validation condition, and script-workspace fixture.
+- Prevention: run `matlab -batch "run('tests/run_all_tests.m')"` and the frozen benchmark comparison after changes affecting configuration, units, torque coefficients, or integration.
+
 ### 2026-06-07 — Stop tracking the local fix checklist
 
 - Added `/fix.md` to `.gitignore` and removed the file from Git tracking while preserving the local working copy.
@@ -45,3 +54,11 @@
 - Added three benchmark cases under `benchmarks/cases/`: `pma_relax_no_current`, `pma_stt_current`, and `pma_sot_current`, each with its own local `conf_file.m` and `params.m`.
 - Added `benchmarks/README.md` and placeholder files for the `benchmarks/current/` and `benchmarks/baseline/` directories.
 - Prevention: keep benchmark baselines frozen by copying reviewed current `.mat` files into `benchmarks/baseline/` manually only after intentional review; do not have the runner overwrite baseline files automatically.
+
+## Error Logs
+
+### 2026-06-07 — Test fixture omitted physical constants
+
+- The initial C1 test run failed because the script-based RK4 solver expected `gam` and the other values from `constantfile.m` in its caller workspace.
+- Resolved by loading the existing `constantfile.m` from the test fixture before invoking `rk4_4llg.m`.
+- Prevention: initialize both configuration values and project constants in fixtures that invoke workspace-dependent MATLAB scripts.
