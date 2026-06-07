@@ -1,5 +1,10 @@
 ## Source Code Changes
 
+### 2026-06-07 — Stop tracking the local fix checklist
+
+- Added `/fix.md` to `.gitignore` and removed the file from Git tracking while preserving the local working copy.
+- Prevention: keep machine-local project checklists ignored so local status updates are not published unintentionally.
+
 ### 2026-06-05 — Pin text line-ending policy
 
 - Added `.gitattributes` rules to disable Git text conversion for MATLAB (`*.m`) and Markdown (`*.md`) files, preserving their existing line endings byte-for-byte.
