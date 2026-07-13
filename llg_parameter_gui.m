@@ -15,7 +15,7 @@ table_data = cell(size(catalog, 1), 3);
 for row_idx = 1:size(catalog, 1)
     table_data{row_idx, 1} = catalog{row_idx, 1};
     table_data{row_idx, 2} = value_to_text( ...
-        get_nested_value(cfg, catalog{row_idx, 1}));
+        get_catalog_value(cfg, catalog{row_idx, 1}));
     table_data{row_idx, 3} = catalog{row_idx, 2};
 end
 
@@ -95,12 +95,24 @@ uicontrol(window, 'Style', 'pushbutton', 'String', 'Run and Save', ...
 end
 
 function cfg = table_to_config(table_data, cfg, catalog)
+init_theta_deg = [];
+init_phi_deg = [];
 for row_idx = 1:size(catalog, 1)
     path = catalog{row_idx, 1};
-    template = get_nested_value(cfg, path);
+    template = get_catalog_value(cfg, path);
     value = text_to_value(table_data{row_idx, 2}, template, path);
-    cfg = set_nested_value(cfg, path, value);
+    if strcmp(path, 'initial.theta_deg')
+        init_theta_deg = value;
+    elseif strcmp(path, 'initial.phi_deg')
+        init_phi_deg = value;
+    else
+        cfg = set_nested_value(cfg, path, value);
+    end
 end
+init_theta = init_theta_deg / 180 * pi;
+init_phi = init_phi_deg / 180 * pi;
+cfg.initial.magnetization = [sin(init_theta) * cos(init_phi), ...
+    sin(init_theta) * sin(init_phi), cos(init_theta)];
 validate_params(cfg);
 end
 
@@ -154,6 +166,18 @@ parts = strsplit(path, '.');
 value = cfg;
 for idx = 1:numel(parts)
     value = value.(parts{idx});
+end
+end
+
+function value = get_catalog_value(cfg, path)
+if strcmp(path, 'initial.theta_deg')
+    value = acos(max(-1, min(1, cfg.initial.magnetization(3)))) ...
+        / pi * 180;
+elseif strcmp(path, 'initial.phi_deg')
+    value = atan2(cfg.initial.magnetization(2), ...
+        cfg.initial.magnetization(1)) / pi * 180;
+else
+    value = get_nested_value(cfg, path);
 end
 end
 
@@ -212,7 +236,8 @@ catalog = { ...
     'torques.sot.field_like_ratio', 'dimensionless'; ...
     'thermal.enabled', '0 or 1'; ...
     'thermal.temperature', 'K'; ...
-    'initial.magnetization', 'dimensionless'; ...
+    'initial.theta_deg', 'degrees from +z'; ...
+    'initial.phi_deg', 'degrees from +x'; ...
     'output.plot', '0 or 1'; ...
     'output.line_width', 'points'};
 end

@@ -36,10 +36,12 @@ Start the simple parameter editor from the repository root:
 llg_parameter_gui
 ```
 
-The table exposes every field in the canonical `default_params()` struct and
-shows its unit or allowed selection. **Run and Save** validates the edited
-struct, calls `rk4_4llg_solver`, plots the magnetization, and writes one MAT
-file containing a versioned `result` struct. `result.params` is the exact
+The table exposes the canonical `default_params()` values and shows each unit
+or allowed selection. Initial magnetization is entered as polar angle `theta`
+from +z and azimuthal angle `phi` from +x, both in degrees; the GUI converts
+these angles to `cfg.initial.magnetization`. **Run and Save** validates the
+edited struct, calls `rk4_4llg_solver`, plots the magnetization, and writes one
+MAT file containing a versioned `result` struct. `result.params` is the exact
 validated parameter struct used for the run; the time and magnetization
 outputs are stored as `result.tt`, `result.mmx`, `result.mmy`, and
 `result.mmz`.

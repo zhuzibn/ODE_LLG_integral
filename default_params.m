@@ -61,7 +61,10 @@ cfg.thermal.enabled = 0; % binary flag
 cfg.thermal.temperature = 300; % K
 
 cfg.initial = struct();
-cfg.initial.magnetization = [sin(pi / 4), 0, cos(pi / 4)]; % dimensionless
+init_theta = 45 / 180 * pi; % rad, polar angle from +z
+init_phi = 0; % rad, azimuthal angle from +x
+cfg.initial.magnetization = [sin(init_theta) * cos(init_phi), ...
+    sin(init_theta) * sin(init_phi), cos(init_theta)]; % dimensionless
 
 cfg.output = struct();
 cfg.output.plot = 1; % binary flag used by main.m

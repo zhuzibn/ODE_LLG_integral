@@ -3,6 +3,7 @@
 ### 2026-07-13 — Add canonical parameter GUI
 
 - Added a simple MATLAB table-based GUI that edits every field in the canonical parameter struct, displays units and allowed selections, validates edits, runs the existing RK4 solver, and plots magnetization.
+- Replaced direct Cartesian initial-magnetization editing in the GUI with polar `theta` and azimuthal `phi` inputs in degrees; the saved canonical configuration still contains the derived normalized Cartesian vector.
 - Added a save wrapper that writes a versioned result struct containing the exact validated parameters, timestamp, time array, and magnetization components used and produced by each run.
 - Added a focused save/load test and GUI usage documentation; LLGS formulas, solver arithmetic, defaults, and unit conventions were unchanged.
 
