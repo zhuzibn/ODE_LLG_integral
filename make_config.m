@@ -1,5 +1,8 @@
 function config = make_config(overrides)
-%MAKE_CONFIG Return LLGS feature flags as an explicit configuration struct.
+%MAKE_CONFIG Return legacy-flat LLGS feature flags for compatibility.
+%
+% New callers should use default_params(). This helper is retained while
+% rk4_4llg_solver still accepts the temporary legacy-flat params layout.
 %
 % Selection guide:
 %   IMAPMA          1 = in-plane magnetic anisotropy (IMA).

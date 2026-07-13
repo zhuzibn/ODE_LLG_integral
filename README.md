@@ -1,20 +1,54 @@
 # ODE_LLG_integral
 
-The root solver uses explicit configuration, constants, and parameter structs:
+The root solver uses one validated, nested parameter object:
 
 1. `main.m`: editable example driver.
-2. `make_config.m`: creates configuration flags.
-3. `physical_constants.m`: returns the physical constants.
+2. `default_params.m`: creates the complete canonical parameter object.
+3. `validate_params.m`: validates its schema, values, and feature dependencies.
 4. `rk4_4llg_solver.m`: callable RK4 integration function.
 5. `field_eta.m`: calculates effective fields and torque coefficients.
 6. `LLG_solver.m`: evaluates the LLGS right-hand side.
 
-Create a configuration with `make_config()`, collect simulation inputs in a
-`params` struct, and call:
+Create the defaults, override the values needed for the run, and call the
+solver without caller-workspace variables or caller-supplied constants:
 
 ```matlab
-[tt, mmx, mmy, mmz] = rk4_4llg_solver(params);
+cfg = default_params();
+cfg.solver.runtime = 10e-9;
+[tt, mmx, mmy, mmz] = rk4_4llg_solver(cfg);
 ```
+
+`default_params(overrides)` also accepts a small recursive struct override.
+Every named field must already exist in the default object, so misspellings
+are rejected:
+
+```matlab
+cfg = default_params(struct( ...
+    'solver', struct('runtime', 2e-9, 'tstep', 5e-12), ...
+    'thermal', struct('enabled', 0)));
+```
+
+## Parameter groups
+
+- `cfg.material`: saturation magnetization and damping.
+- `cfg.geometry`: free-layer and heavy-metal dimensions.
+- `cfg.solver`: runtime, timestep, solver selection, and dimensionless mode.
+- `cfg.fields`: anisotropy mode/field, external field, demagnetization, and dipole inputs.
+- `cfg.torques.stt` and `cfg.torques.sot`: feature flags, currents, polarizations, and torque coefficients.
+- `cfg.thermal`: thermal-noise flag and temperature.
+- `cfg.initial`: initial magnetization.
+- `cfg.output`: example plotting controls; these do not enter the solver physics.
+
+The only supported solver selection is `cfg.solver.method = 'rk4'`. The
+solver obtains immutable values from `physical_constants()` internally.
+
+## Legacy compatibility
+
+`rk4_4llg_solver` temporarily continues to accept the historical flat
+`params` struct, including its `config`, `constants`, and optional `g` fields.
+That input is converted to the canonical nested layout, validated, and run
+through the same computational path. `make_config()` remains only as a
+compatibility helper for those callers and is not a second default interface.
 
 ## Units
 
@@ -22,7 +56,7 @@ Create a configuration with `make_config()`, collect simulation inputs in a
 - Effective fields and field inputs (`Hk`, `Hext`, demagnetizing, dipole, thermal, and torque-equivalent fields) use Tesla.
 - Saturation magnetization `Ms` is entered in emu/cm3. The code converts it to A/m where needed with `Ms*1e3`.
 - Current densities (`jc_STT`, `jc_SOT`) are in A/m2.
-- Free-layer and heavy-metal dimensions (`LFL`, `WFL`, `tFL`, `LHM`, `WHM`, `tHM`, `lambdaSF`) are in meters.
+- Free-layer and heavy-metal dimensions (`LFL`, `WFL`, `tFL`, `LHM`, `WHM`, `tHM`, `spin_diffusion_length`) are in meters.
 
 7. If you used this code for your experiments or found it helpful, selectively cite the following papers:  
 **SOT switching of Mn3Sn**: [Appl. Phys. Lett. 127, 022407 (2025)], [Phys. Rev. B 109, 134433 (2024)]  

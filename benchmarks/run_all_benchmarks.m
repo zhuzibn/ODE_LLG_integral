@@ -48,19 +48,36 @@ addpath(repo_root);
 cd(case_dir);
 
 params();
-config = benchmark_config(case_name);
-params_struct = struct( ...
-    'runtime', runtime, 'tstep', tstep, 'Ms', Ms, 'tFL', tFL, ...
-    'alp', alp, 'm_init', m_init, 'Demag_', Demag_, ...
-    'jc_STT', jc_STT, 'jc_SOT', jc_SOT, 'Hext', Hext, ...
-    'PolSTT', PolSTT, 'polSOT', polSOT, 'mmmPL', mmmPL, ...
-    'Hk', Hk, 'LFL', LFL, 'WFL', WFL, ...
-    'facFLT_SHE', facFLT_SHE, 'K12Dipole', K12Dipole, ...
-    'PolFL', PolFL, 'facFLT_STT', facFLT_STT, ...
-    'thetaSH', thetaSH, 'tHM', tHM, 'lambdaSF', lambdaSF, ...
-    'TT', TT, 'config', config, 'constants', physical_constants());
+cfg = benchmark_params(case_name);
+cfg.solver.runtime = runtime;
+cfg.solver.tstep = tstep;
+cfg.material.Ms = Ms;
+cfg.material.damping = alp;
+cfg.geometry.LFL = LFL;
+cfg.geometry.WFL = WFL;
+cfg.geometry.tFL = tFL;
+cfg.geometry.LHM = LHM;
+cfg.geometry.WHM = WHM;
+cfg.geometry.tHM = tHM;
+cfg.fields.Hk = Hk;
+cfg.fields.external = Hext;
+cfg.fields.demag_tensor = Demag_;
+cfg.fields.dipole_tensor = K12Dipole;
+cfg.torques.stt.current_density = jc_STT;
+cfg.torques.stt.free_layer_polarization = PolFL;
+cfg.torques.stt.polarization = PolSTT;
+cfg.torques.stt.pinned_magnetization = mmmPL;
+cfg.torques.stt.field_like_ratio = facFLT_STT;
+cfg.torques.sot.current_density = jc_SOT;
+cfg.torques.sot.spin_hall_angle = thetaSH;
+cfg.torques.sot.spin_diffusion_length = lambdaSF;
+cfg.torques.sot.polarization = polSOT;
+cfg.torques.sot.field_like_ratio = facFLT_SHE;
+cfg.thermal.temperature = TT;
+cfg.initial.magnetization = m_init;
+cfg.output.plot = 0;
 
-[tt, mmx, mmy, mmz] = rk4_4llg_solver(params_struct);
+[tt, mmx, mmy, mmz] = rk4_4llg_solver(cfg);
 
 trajectory = [mmx(:), mmy(:), mmz(:)];
 final_m = trajectory(end, :);
@@ -87,8 +104,8 @@ metadata.parameters.Hext = Hext;
 metadata.parameters.jc_STT = jc_STT;
 metadata.parameters.jc_SOT = jc_SOT;
 metadata.parameters.thetaSH = thetaSH;
-metadata.parameters.thermalnois = config.thermalnois;
-metadata.parameters.dimensionlessLLG = config.dimensionlessLLG;
+metadata.parameters.thermalnois = cfg.thermal.enabled;
+metadata.parameters.dimensionlessLLG = cfg.solver.dimensionless;
 
 result = struct();
 result.tt = tt;
@@ -100,17 +117,17 @@ result.max_norm_error = max(norm_error);
 result.metadata = metadata;
 end
 
-function config = benchmark_config(case_name)
+function cfg = benchmark_params(case_name)
+cfg = default_params();
 switch case_name
     case 'pma_relax_no_current'
-        overrides = struct('STT_DLT', 0);
+        cfg.torques.stt.damping_like_enabled = 0;
     case 'pma_stt_current'
-        overrides = struct();
     case 'pma_sot_current'
-        overrides = struct('STT_DLT', 0, 'SOT_DLT', 1);
+        cfg.torques.stt.damping_like_enabled = 0;
+        cfg.torques.sot.damping_like_enabled = 1;
     otherwise
         error('ODE_LLG_integral:UnknownBenchmarkCase', ...
             'Unknown benchmark case "%s".', case_name);
 end
-config = make_config(overrides);
 end

@@ -1,13 +1,15 @@
 function [tt, mmx, mmy, mmz] = rk4_4llg_solver(params)
-%RK4_4LLG_SOLVER Integrate LLGS dynamics from explicit parameters.
+%RK4_4LLG_SOLVER Integrate LLGS dynamics from nested or legacy parameters.
+%
+% The default_params() nested layout is canonical. The historical flat
+% params layout is accepted temporarily through normalize_params().
 
-validate_params(params);
+[params, constants] = normalize_params(params);
 
 runtime = params.runtime;
 tstep = params.tstep;
 alp = params.alp;
 config = params.config;
-constants = params.constants;
 Hk = params.Hk;
 
 if config.dimensionlessLLG
@@ -61,98 +63,4 @@ function kk = evaluate_rhs(mmm, Hk, params, config, constants, scal)
 dmdt = LLG_solver(params.alp, mmm, hh, params.polSOT, params.PolSTT, ...
     sttdlt, sttflt, sotdlt, sotflt);
 kk = scal * dmdt;
-end
-
-function validate_params(params)
-required_fields = { ...
-    'runtime', 'tstep', 'Ms', 'tFL', 'alp', 'm_init', 'Demag_', ...
-    'jc_STT', 'jc_SOT', 'Hext', 'PolSTT', 'polSOT', 'mmmPL', ...
-    'Hk', 'LFL', 'WFL', 'facFLT_SHE', 'K12Dipole', 'PolFL', ...
-    'facFLT_STT', 'thetaSH', 'tHM', 'lambdaSF', 'TT', 'config', ...
-    'constants'};
-for idx = 1:numel(required_fields)
-    name = required_fields{idx};
-    if ~isfield(params, name)
-        error('rk4_4llg:MissingParameter', ...
-            'Missing required parameter "%s".', name);
-    end
-end
-
-if ~(isscalar(params.runtime) && isnumeric(params.runtime) ...
-        && isfinite(params.runtime) && params.runtime > 0)
-    error('rk4_4llg:InvalidRuntime', ...
-        'runtime must be a finite positive scalar.');
-end
-if ~(isscalar(params.tstep) && isnumeric(params.tstep) ...
-        && isfinite(params.tstep) && params.tstep > 0)
-    error('rk4_4llg:InvalidTstep', ...
-        'tstep must be a finite positive scalar.');
-end
-if ~(isscalar(params.Ms) && isnumeric(params.Ms) ...
-        && isfinite(params.Ms) && params.Ms > 0)
-    error('rk4_4llg:InvalidMs', 'Ms must be a finite positive scalar.');
-end
-if ~(isscalar(params.tFL) && isnumeric(params.tFL) ...
-        && isfinite(params.tFL) && params.tFL > 0)
-    error('rk4_4llg:InvalidTFL', 'tFL must be a finite positive scalar.');
-end
-if ~(isscalar(params.alp) && isnumeric(params.alp) ...
-        && isfinite(params.alp) && params.alp >= 0)
-    error('rk4_4llg:InvalidAlpha', ...
-        'alp must be a finite nonnegative scalar.');
-end
-if ~(isscalar(params.config.IMAPMA) && isnumeric(params.config.IMAPMA) ...
-        && isfinite(params.config.IMAPMA) ...
-        && any(params.config.IMAPMA == [1, 2]))
-    error('rk4_4llg:InvalidIMAPMA', ...
-        'IMAPMA must be 1 for IMA or 2 for PMA.');
-end
-if params.config.dimensionlessLLG
-    if ~isfield(params, 'g')
-        error('rk4_4llg:MissingParameter', ...
-            'Missing required parameter "g" for dimensionless LLG.');
-    end
-    validate_finite_scalar(params.g, 'rk4_4llg:InvalidGFactor', ...
-        'g must be a finite scalar.');
-end
-if ~(isnumeric(params.m_init) && isvector(params.m_init) ...
-        && numel(params.m_init) == 3 && all(isfinite(params.m_init(:))))
-    error('rk4_4llg:InvalidInitialMagnetization', ...
-        'm_init must be a finite 3-component vector.');
-end
-if norm(params.m_init) == 0
-    error('rk4_4llg:ZeroInitialMagnetization', ...
-        'm_init must have nonzero norm.');
-end
-if ~(isnumeric(params.Demag_) && isequal(size(params.Demag_), [3, 3]) ...
-        && all(isfinite(params.Demag_(:))))
-    error('rk4_4llg:InvalidDemag', ...
-        'Demag_ must be a finite 3-by-3 demagnetization tensor.');
-end
-validate_finite_scalar(params.jc_STT, 'rk4_4llg:InvalidJcSTT', ...
-    'jc_STT must be a finite scalar.');
-validate_finite_scalar(params.jc_SOT, 'rk4_4llg:InvalidJcSOT', ...
-    'jc_SOT must be a finite scalar.');
-validate_vector3(params.Hext, 'rk4_4llg:InvalidHext', ...
-    'Hext must be a finite 3-component vector.');
-validate_vector3(params.PolSTT, 'rk4_4llg:InvalidPolSTT', ...
-    'PolSTT must be a finite 3-component vector.');
-validate_vector3(params.polSOT, 'rk4_4llg:InvalidPolSOT', ...
-    'polSOT must be a finite 3-component vector.');
-validate_vector3(params.mmmPL, ...
-    'rk4_4llg:InvalidPinnedLayerMagnetization', ...
-    'mmmPL must be a finite 3-component vector.');
-end
-
-function validate_finite_scalar(value, identifier, message)
-if ~(isscalar(value) && isnumeric(value) && isfinite(value))
-    error(identifier, message);
-end
-end
-
-function validate_vector3(value, identifier, message)
-if ~(isnumeric(value) && isvector(value) && numel(value) == 3 ...
-        && all(isfinite(value(:))))
-    error(identifier, message);
-end
 end

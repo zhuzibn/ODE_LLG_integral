@@ -1,7 +1,7 @@
 # LLGS Benchmarks
 
-These benchmarks compare deterministic trajectories from the explicit
-`rk4_4llg_solver(params)` API against frozen reference outputs.
+These benchmarks compare deterministic trajectories from the canonical
+`rk4_4llg_solver(cfg)` nested-parameter API against frozen reference outputs.
 
 ## Generate Current Results
 

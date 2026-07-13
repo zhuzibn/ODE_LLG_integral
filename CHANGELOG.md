@@ -1,5 +1,14 @@
 ## Source Code Changes
 
+### 2026-07-13 — Migrate to one nested parameter interface
+
+- Added `default_params()` as the complete canonical LLGS parameter factory, with documented dimensional units and strict recursive overrides that reject unknown fields.
+- Added direct nested-schema and value validation before integration, including solver/flag selections and dimensionless/thermal feature dependencies.
+- Kept historical flat `params`, `config`, `constants`, and optional `g` handling through one explicit compatibility adapter; no deprecation warning is emitted.
+- Migrated `main.m`, tests, and the deterministic benchmark harness to the nested API while retaining `make_config()` only for legacy callers.
+- Verified the full test suite and all frozen benchmark trajectories at the unchanged `1e-10` tolerance; LLGS formulas, torque signs, RK4 stages/arithmetic, stochastic behavior, time grid, normalization, defaults, and unit conventions were unchanged.
+- Prevention: keep all public inputs in `default_params()`, validate before computation, and compare nested and legacy trajectories whenever the compatibility boundary changes.
+
 ### 2026-06-07 — Remove duplicate example driver
 
 - Removed `main_sample.m` after verifying it was byte-for-byte identical to `main.m`.

@@ -3,7 +3,7 @@ repo_root = fileparts(fileparts(mfilename('fullpath')));
 tests_root = fileparts(mfilename('fullpath'));
 
 addpath(repo_root);
-results = runtests(fullfile(tests_root, 'test_minimal.m'));
+results = runtests(tests_root);
 disp(results);
 
 % Return a nonzero MATLAB batch status when any test fails.
