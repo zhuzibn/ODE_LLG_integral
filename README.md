@@ -28,6 +28,22 @@ cfg = default_params(struct( ...
     'thermal', struct('enabled', 0)));
 ```
 
+## Parameter GUI
+
+Start the simple parameter editor from the repository root:
+
+```matlab
+llg_parameter_gui
+```
+
+The table exposes every field in the canonical `default_params()` struct and
+shows its unit or allowed selection. **Run and Save** validates the edited
+struct, calls `rk4_4llg_solver`, plots the magnetization, and writes one MAT
+file containing a versioned `result` struct. `result.params` is the exact
+validated parameter struct used for the run; the time and magnetization
+outputs are stored as `result.tt`, `result.mmx`, `result.mmy`, and
+`result.mmz`.
+
 ## Parameter groups
 
 - `cfg.material`: saturation magnetization and damping.

@@ -49,6 +49,25 @@ verifyEqual(testCase, y_new, y_old, 'AbsTol', 1e-12);
 verifyEqual(testCase, z_new, z_old, 'AbsTol', 1e-12);
 end
 
+function testRunAndSavePreservesUsedParameters(testCase)
+cfg = default_params(struct( ...
+    'solver', struct('runtime', 20e-12, 'tstep', 5e-12), ...
+    'output', struct('plot', 0)));
+output_file = [tempname '.mat'];
+cleanup = onCleanup(@() delete_if_present(output_file));
+
+result = run_llg_and_save(cfg, output_file);
+saved = load(output_file, 'result');
+
+verifyEqual(testCase, saved.result, result);
+verifyEqual(testCase, result.schema_version, 1);
+verifyEqual(testCase, result.params, cfg);
+verifySize(testCase, [result.tt, result.mmx, result.mmy, result.mmz], ...
+    [5, 4]);
+clear cleanup;
+delete_if_present(output_file);
+end
+
 function testUnknownOverrideFieldFails(testCase)
 verifyError(testCase, ...
     @() default_params(struct('solver', struct('tstepp', 1e-12))), ...
@@ -133,4 +152,11 @@ params = struct( ...
     'K12Dipole', zeros(3), 'PolFL', 0.4, 'facFLT_STT', 0, ...
     'thetaSH', 0.2, 'tHM', 2e-9, 'lambdaSF', 5e-9, 'TT', 300, ...
     'config', cfg, 'constants', physical_constants());
+end
+
+
+function delete_if_present(file_name)
+if isfile(file_name)
+    delete(file_name);
+end
 end

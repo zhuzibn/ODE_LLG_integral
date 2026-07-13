@@ -1,5 +1,11 @@
 ## Source Code Changes
 
+### 2026-07-13 — Add canonical parameter GUI
+
+- Added a simple MATLAB table-based GUI that edits every field in the canonical parameter struct, displays units and allowed selections, validates edits, runs the existing RK4 solver, and plots magnetization.
+- Added a save wrapper that writes a versioned result struct containing the exact validated parameters, timestamp, time array, and magnetization components used and produced by each run.
+- Added a focused save/load test and GUI usage documentation; LLGS formulas, solver arithmetic, defaults, and unit conventions were unchanged.
+
 ### 2026-07-13 — Migrate to one nested parameter interface
 
 - Added `default_params()` as the complete canonical LLGS parameter factory, with documented dimensional units and strict recursive overrides that reject unknown fields.
