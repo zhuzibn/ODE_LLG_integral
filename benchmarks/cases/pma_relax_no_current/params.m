@@ -1,4 +1,4 @@
-runtime = 2e-9;
+runtime = 6e-9;
 tstep = 5e-12;
 
 LFL = 50e-9;

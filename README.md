@@ -28,6 +28,26 @@ cfg = default_params(struct( ...
     'thermal', struct('enabled', 0)));
 ```
 
+## Benchmark examples
+
+The deterministic 6 ns benchmark suite covers PMA relaxation without
+current, STT-driven dynamics, and SOT-driven dynamics. Each figure shows
+`m_x`, `m_y`, and `m_z` together against time in nanoseconds. See
+[benchmarks/README.md](benchmarks/README.md) for instructions to regenerate
+and compare these trajectories.
+
+### PMA relaxation without current
+
+![Magnetization evolution for the PMA relaxation benchmark](benchmarks/figures/pma_relax_no_current_magnetization.png)
+
+### PMA with STT current
+
+![Magnetization evolution for the PMA STT-current benchmark](benchmarks/figures/pma_stt_current_magnetization.png)
+
+### PMA with SOT current
+
+![Magnetization evolution for the PMA SOT-current benchmark](benchmarks/figures/pma_sot_current_magnetization.png)
+
 ## Parameter GUI
 
 Start the simple parameter editor from the repository root:

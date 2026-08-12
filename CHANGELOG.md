@@ -1,5 +1,16 @@
 ## Source Code Changes
 
+### 2026-08-12 — Extend benchmark duration to 6 ns
+
+- Changed all three deterministic benchmark cases from 2 ns to 6 ns while retaining the 5 ps timestep and all physical parameters.
+- Accepted the generated 6 ns trajectories as the new frozen baselines and refreshed the README figures from the same runs.
+
+### 2026-08-12 — Plot benchmark magnetization trajectories
+
+- Added one generated PNG for each benchmark case, plotting `m_x`, `m_y`, and `m_z` together against time in nanoseconds.
+- Added verified snapshots of all three plots to the root README so benchmark behavior is visible without running MATLAB.
+- Kept the frozen baselines, saved trajectory schema, solver parameters, and LLGS numerics unchanged.
+
 ### 2026-07-13 — Add canonical parameter GUI
 
 - Added a simple MATLAB table-based GUI that edits every field in the canonical parameter struct, displays units and allowed selections, validates edits, runs the existing RK4 solver, and plots magnetization.

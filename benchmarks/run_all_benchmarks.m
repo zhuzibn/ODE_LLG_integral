@@ -1,5 +1,5 @@
 function results = run_all_benchmarks()
-%RUN_ALL_BENCHMARKS Generate current LLGS benchmark result files.
+%RUN_ALL_BENCHMARKS Generate current LLGS benchmark results and plots.
 %
 % The baseline directory is intentionally not modified by this harness.
 
@@ -7,6 +7,7 @@ repo_root = fileparts(fileparts(mfilename('fullpath')));
 bench_root = fileparts(mfilename('fullpath'));
 cases_root = fullfile(bench_root, 'cases');
 current_root = fullfile(bench_root, 'current');
+reports_root = fullfile(bench_root, 'reports');
 
 case_names = { ...
     'pma_relax_no_current', ...
@@ -17,6 +18,9 @@ case_names = { ...
 if ~exist(current_root, 'dir')
     mkdir(current_root);
 end
+if ~exist(reports_root, 'dir')
+    mkdir(reports_root);
+end
 
 addpath(repo_root);
 
@@ -25,18 +29,22 @@ for case_idx = 1:numel(case_names)
     case_name = case_names{case_idx};
     case_dir = fullfile(cases_root, case_name);
     out_file = fullfile(current_root, [case_name '.mat']);
+    plot_file = fullfile(reports_root, [case_name '_magnetization.png']);
 
     fprintf('Running %s...\n', case_name);
     result = run_one_case(repo_root, case_dir, case_name);
     save(out_file, '-struct', 'result');
+    plot_benchmark_result(result, plot_file);
 
     results(case_idx).case_name = case_name; %#ok<AGROW>
     results(case_idx).output_file = out_file; %#ok<AGROW>
+    results(case_idx).plot_file = plot_file; %#ok<AGROW>
     results(case_idx).final_m = result.final_m; %#ok<AGROW>
     results(case_idx).max_norm_error = result.max_norm_error; %#ok<AGROW>
 end
 
 fprintf('Saved %d benchmark result file(s) to %s\n', numel(case_names), current_root);
+fprintf('Saved %d magnetization plot(s) to %s\n', numel(case_names), reports_root);
 end
 
 function result = run_one_case(repo_root, case_dir, case_name)

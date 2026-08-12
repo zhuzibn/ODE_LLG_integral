@@ -2,6 +2,7 @@
 
 These benchmarks compare deterministic trajectories from the canonical
 `rk4_4llg_solver(cfg)` nested-parameter API against frozen reference outputs.
+All three cases run for 6 ns with a 5 ps timestep.
 
 ## Generate Current Results
 
@@ -13,6 +14,9 @@ run_all_benchmarks
 ```
 
 The runner writes `.mat` files to `benchmarks/current/`. Each file contains `tt`, `mmx`, `mmy`, `mmz`, `final_m`, `max_norm_error`, and `metadata`.
+
+It also writes one PNG per case to `benchmarks/reports/`. Each figure plots
+`m_x`, `m_y`, and `m_z` together against time in nanoseconds.
 
 ## Create Frozen Baselines
 
