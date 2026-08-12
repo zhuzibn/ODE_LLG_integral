@@ -18,15 +18,21 @@ Treat this as scientific research code, not a generic software project. Numerica
 
 ## Repository structure
 
-- `main_sample.m`: example driver; use as a template for local runs.
-- `conf_file_sample.m`: configuration template; use as a template for local runs.
+- `main.m`: editable example driver using the canonical nested parameter interface.
+- `default_params.m`: creates the complete canonical parameter object.
+- `validate_params.m`: validates the canonical schema, values, and feature dependencies.
+- `normalize_params.m`: converts the legacy flat parameter layout to the canonical nested layout.
+- `make_config.m`: compatibility helper for legacy flat-parameter callers.
 - `LLG_solver.m`: LLGS right-hand side.
 - `field_eta.m`: effective field and torque coefficient calculation.
-- `rk4_4llg.m`: RK4 time integration loop.
+- `rk4_4llg_solver.m`: callable RK4 time integration function.
+- `llg_parameter_gui.m`: parameter editor for the canonical interface.
+- `run_llg_and_save.m`: validated solver-and-save wrapper used by the GUI.
+- `tests/`: focused solver, validation, parameter-interface, and save/load tests.
 - `benchmarks/`: deterministic regression benchmark harness.
 - `benchmarks/baseline/`: frozen benchmark reference outputs.
 
-Do not overwrite a user's existing `main.m` or `conf_file.m` unless explicitly asked.
+Keep `main.m` as the canonical editable example driver. Do not replace it with user-specific local run settings unless explicitly asked.
 
 ## Workflow rules
 
@@ -58,8 +64,12 @@ After any change to:
 
 - `LLG_solver.m`
 - `field_eta.m`
-- `rk4_4llg.m`
-- `conf_file_sample.m`
+- `rk4_4llg_solver.m`
+- `default_params.m`
+- `normalize_params.m`
+- `validate_params.m`
+- `physical_constants.m`
+- `make_config.m`
 - benchmark case parameters
 
 run:
