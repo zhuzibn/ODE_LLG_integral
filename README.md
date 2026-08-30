@@ -96,7 +96,10 @@ compatibility helper for those callers and is not a second default interface.
 - Current densities (`jc_STT`, `jc_SOT`) are in A/m2.
 - Free-layer and heavy-metal dimensions (`LFL`, `WFL`, `tFL`, `LHM`, `WHM`, `tHM`, `spin_diffusion_length`) are in meters.
 
-7. If you used this code for your experiments or found it helpful, selectively cite the following papers:  
+## Citation
+
+If you used this code for your experiments or found it helpful, selectively cite the following papers:
+
 **SOT switching of Mn3Sn**: [Appl. Phys. Lett. 127, 022407 (2025)], [Phys. Rev. B 109, 134433 (2024)]  
 **SOT switching of NiO**: [Appl. Phys. Lett. 125, 182403 (2024)]  
 **SOT switching of collinear antiferromagnet**: [J. Appl. Phys. 133, 153904 (2023)]  
