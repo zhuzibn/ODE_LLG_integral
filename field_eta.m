@@ -58,7 +58,7 @@ switch config.IMAPMA
 end
 % Numerically hbar in eV.s, equivalently hbar/e in J.s/C for this coefficient.
 Jp=2*tFL*(Ms*1e3)/constants.hbar_over_e_eVs_or_Js_per_C;
-if config.STT_DLT
+if config.STT_DLT || config.STT_FLT
     efficiencyselect=2;
     switch efficiencyselect%only for IMA, to modify to fit for PMA
         case 1
@@ -80,16 +80,18 @@ if config.STT_DLT
             %         [f12a,f21a]=torque_eff(P1,P2,theta);
             %         b=f12a;
     end
-    sttdlt=jc_STT/Jp*b;
-    sttflt=facFLT_STT*sttdlt;
+    sttbase=jc_STT/Jp*b;
+    sttdlt=config.STT_DLT*sttbase;
+    sttflt=config.STT_FLT*facFLT_STT*sttbase;
 else
     sttdlt=0;
     sttflt=0;
 end
-if config.SOT_DLT
+if config.SOT_DLT || config.SOT_FLT
     %sotdlt=thetaSH*jc_SOT/Jp*(1-sech(tHM/lambdaSF));%to modify to auto get easy (y) axis
-    sotdlt=thetaSH*jc_SOT/Jp;
-    sotflt=facFLT_SHE*sotdlt;
+    sotbase=thetaSH*jc_SOT/Jp;
+    sotdlt=config.SOT_DLT*sotbase;
+    sotflt=config.SOT_FLT*facFLT_SHE*sotbase;
 else
     sotdlt=0;
     sotflt=0;

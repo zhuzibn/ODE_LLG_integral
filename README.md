@@ -79,6 +79,11 @@ outputs are stored as `result.tt`, `result.mmx`, `result.mmy`, and
 
 The only supported solver selection is `cfg.solver.method = 'rk4'`. The
 solver obtains immutable values from `physical_constants()` internally.
+The damping-like and field-like flags independently gate their corresponding
+torque terms. A field-like torque can therefore be enabled without enabling
+the damping-like term; its amplitude is the configured field-like ratio times
+the ungated damping-like reference amplitude. Initial magnetization and all
+polarization vectors must have unit length.
 
 ## Legacy compatibility
 

@@ -1,5 +1,17 @@
 ## Source Code Changes
 
+### 2026-09-10 — Make field-like torque controls independent
+
+- Fixed the canonical and legacy STT/SOT field-like enable flags so each
+  field-like term is gated independently from its damping-like counterpart.
+- Added unit-vector validation for initial magnetization, STT/SOT polarization,
+  and pinned-layer magnetization inputs.
+- Added direct Gilbert-to-LL equivalence and all-four-flag-combination tests.
+- Preserved the default trajectories because both default field-like ratios
+  remain zero.
+- Prevention: test torque flags independently with nonzero signed ratios and
+  compare the explicit LL kernel against the implicit Gilbert equation.
+
 ### 2026-08-12 — Extend benchmark duration to 6 ns
 
 - Changed all three deterministic benchmark cases from 2 ns to 6 ns while retaining the 5 ps timestep and all physical parameters.
