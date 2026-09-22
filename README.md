@@ -96,7 +96,7 @@ compatibility helper for those callers and is not a second default interface.
 ## Units
 
 - Time inputs (`runtime`, `tstep`) and the stored `tt` array are in seconds internally. Plotting code may convert time to nanoseconds with `tt*1e9`.
-- Effective fields and field inputs (`Hk`, `Hext`, demagnetizing, dipole, thermal, and torque-equivalent fields) use Tesla.
+- Effective flux densities and field-equivalent torque amplitudes use tesla. The existing `Hk` and legacy `Hext` names denote tesla-valued `Bk` and `Bext`; do not multiply their values by `mu_0` when passing them to the solver.
 - Saturation magnetization `Ms` is entered in emu/cm3. The code converts it to A/m where needed with `Ms*1e3`.
 - Current densities (`jc_STT`, `jc_SOT`) are in A/m2.
 - Free-layer and heavy-metal dimensions (`LFL`, `WFL`, `tFL`, `LHM`, `WHM`, `tHM`, `spin_diffusion_length`) are in meters.

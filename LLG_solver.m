@@ -3,18 +3,15 @@
 % don't create the same function in new project 
 %1.alp:damping constant,value
 %2.mmm:normalized magnetization, 1-by-3 unit vector
-%3.hh:effective field, 1-by-3 matrix, [Tesla]
+%3.Beff:effective flux density, 1-by-3 vector, [Tesla]
 %4.pSOT:SOT polarization, 1-by-3 matrix
 %5.pSTT:STT polarization, 1-by-3 matrix
 %6.sttdlt:strength of STT DLT,value
 %7.sttflt:strength of STT FLT,value
 %8.sotdlt:strength of SOT DLT,value
 %9.sotflt:strength of SOT FLT,value
-function dmdt=LLG_solver(alp,mmm,hh,pSOT,pSTT,sttdlt,sttflt,sotdlt,sotflt)
-% call this function by feval(@(t,m) LLG_solver(t,m,Hk,alpha),t0,m0)
-% t0 is the initial value of t
-% m0 is the initial value of m
-    dmdt=-cross(mmm,hh)-alp*cross(mmm,cross(mmm,hh))-...
+function dmdt=LLG_solver(alp,mmm,Beff,pSOT,pSTT,sttdlt,sttflt,sotdlt,sotflt)
+    dmdt=-cross(mmm,Beff)-alp*cross(mmm,cross(mmm,Beff))-...
     sttdlt*cross(mmm,cross(mmm,pSTT))+alp*sttdlt*cross(mmm,pSTT)+...
     sttflt*cross(mmm,pSTT)+alp*sttflt*cross(mmm,cross(mmm,pSTT))-...
     sotdlt*cross(mmm,cross(mmm,pSOT))+alp*sotdlt*cross(mmm,pSOT)+...

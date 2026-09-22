@@ -3,9 +3,9 @@
 % don't create the same function in new project 
 %input
 %1. mmm, normalized magnetization, [1x3] unit vector
-%2. Hk, crystalline anisotropy field, double, [Tesla]
+%2. Bk, crystalline anisotropy field, double, [Tesla]
 %3. Demag_, demagnetizing tensor, [3x3] matrix
-%4. Hext, external field, [1x3] vector, [Tesla]
+%4. Bext, external field, [1x3] vector, [Tesla]
 %5. jc_STT, spin current density, double, [A/m2]
 %6. tFL, free layer thickness, double, [m]
 %7. Ms, saturation magnetization, double, [emu/cm3]
@@ -26,34 +26,34 @@
 %22. config: configuration flags from make_config()
 %23. constants: physical constants from physical_constants()
 %output
-%1. hh,total effective field excluding FLT terms, [1x3] vector, [Tesla]
+%1. Beff,total effective flux density excluding FLT terms, [1x3] vector, [Tesla]
 %2. sttdlt, STT DLT field-equivalent coefficient, double, [Tesla]
 %3. sttflt, STT FLT field-equivalent coefficient, double, [Tesla]
 %4. sotdlt, SOT DLT field-equivalent coefficient, double, [Tesla]
 %5. sotflt, SOT FLT field-equivalent coefficient, double, [Tesla]
-function [hh,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Hk,Demag_,Hext,jc_STT,...
+function [Beff,sttdlt,sttflt,sotdlt,sotflt]=field_eta(mmm,Bk,Demag_,Bext,jc_STT,...
     tFL,Ms,facFLT_SHE,K12Dipole,mmmPL,PolFL,lFL,wFL,facFLT_STT,...
     thetaSH,tHM,lambdaSF,jc_SOT,TT,alp,tstep,config,constants)
 switch config.IMAPMA
     case 1%IMA
-        hk=[0,Hk,0].*mmm; %anisotropy field
-        Hd=4*pi*Ms*Demag_*1e-4;%Tesla
-        hd=(-Hd*mmm')'; %demagnetizing field
-        hext=Hext;
+        bk=[0,Bk,0].*mmm; %anisotropy field
+        Bdemag_tensor=4*pi*Ms*Demag_*1e-4;%Tesla
+        bdemag=(-Bdemag_tensor*mmm')'; %demagnetizing field
+        bext=Bext;
         if config.dipolee
-            hdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
+            bdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
         else
-            hdipole=[0,0,0];
+            bdipole=[0,0,0];
         end
     case 2%PMA
-        hk=[0,0,Hk]*mmm(3);
-        Hd=4*pi*Ms*Demag_*1e-4;%Tesla
-        hd=(-Hd*mmm')';%([3x3]*[3x1])'=[1x3]
-        hext=Hext;
+        bk=[0,0,Bk]*mmm(3);
+        Bdemag_tensor=4*pi*Ms*Demag_*1e-4;%Tesla
+        bdemag=(-Bdemag_tensor*mmm')';%([3x3]*[3x1])'=[1x3]
+        bext=Bext;
         if config.dipolee
-            hdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
+            bdipole = 4*pi*1e-7*(K12Dipole*Ms*1e3*mmmPL')';%[Tesla]
         else
-            hdipole=[0,0,0];
+            bdipole=[0,0,0];
         end
 end
 % Numerically hbar in eV.s, equivalently hbar/e in J.s/C for this coefficient.
@@ -98,11 +98,11 @@ else
 end
 %% thermal fluctuation
 if config.thermalnois==1%1(0) (not) enable thermal noise
-    hthermtmp=sqrt(2*constants.kb*TT*alp/(lFL*wFL*tFL*Ms*1e3*constants.gam*(1+alp^2)*tstep));%[T]
-    hthermx=normrnd(0,hthermtmp);hthermy=normrnd(0,hthermtmp);hthermz=normrnd(0,hthermtmp);
-    htherm=[hthermx,hthermy,hthermz];
+    bthermstd=sqrt(2*constants.kb*TT*alp/(lFL*wFL*tFL*Ms*1e3*constants.gam*(1+alp^2)*tstep));%[T]
+    bthermx=normrnd(0,bthermstd);bthermy=normrnd(0,bthermstd);bthermz=normrnd(0,bthermstd);
+    btherm=[bthermx,bthermy,bthermz];
 else
-    htherm=[0,0,0];
+    btherm=[0,0,0];
 end
-hh=hk+hd+hext+hdipole+htherm; %total field
+Beff=bk+bdemag+bext+bdipole+btherm; %total effective flux density
 end
